@@ -1,0 +1,120 @@
+body,
+html {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Main form container */
+.scrape-form {
+    background-color: #45727b;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px 10px rgba(0, 0, 0, 0.9);
+    max-width: 600px;
+    width: 80%;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Heading styling */
+.scrape-form h2 {
+    color: #01060c;
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+}
+
+
+/* Input field and button styling */
+input[type="text"],
+select,
+button {
+    width: 95%;
+    padding: 12px;
+    margin: 12px 0;
+    border: 3px solid #2a3844;
+    border-radius: 10px;
+    font-size: 1rem;
+    background-color: #ffffff;
+    color: #092544;
+    font-weight: 600;
+}
+
+/* Button styling */
+button {
+    background-color: #0b212f;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #214358;
+    /* Darker blue on hover */
+}
+
+/* Error message styling */
+.error-message {
+    color: rgb(86, 10, 10);
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* Scraped data output styling */
+.scraped-data {
+    background-color: #ffffff;
+    /* White background for scraped data */
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    color: #01060c;
+}
+
+/* Scraped data header */
+.scraped-data h3 {
+    color: #0f2f55;
+    /* Darker blue for header */
+    margin-bottom: 15px;
+}
+
+/* Preformatted text for JSON data */
+.scraped-data pre {
+    background-color: #f4f8ff;
+    /* Light blue background for data */
+    padding: 15px;
+    border-radius: 8px;
+    font-family: 'Courier New', Courier, monospace;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .scrape-form {
+        padding: 20px;
+        width: 90%;
+        /* Make the form smaller on mobile */
+    }
+
+    .scrape-form h2 {
+        font-size: 2rem;
+        /* Smaller heading */
+    }
+
+    input[type="text"],
+    select,
+    button {
+        font-size: 0.9rem;
+        /* Smaller inputs and buttons */
+        padding: 10px;
+    }
+
+    .scraped-data {
+        padding: 15px;
+    }
+}
