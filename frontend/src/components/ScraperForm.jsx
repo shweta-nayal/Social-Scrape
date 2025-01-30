@@ -7,33 +7,35 @@ const ScrapeForm = () => {
   const [scrapedData, setScrapedData] = useState(null);
   const [error, setError] = useState(null);
 
-    const handleScrape = async () => {
-  setError(null);
-  setScrapedData(null);
+   const handleScrape = async () => {
+    setError(null);
+    setScrapedData(null);
 
-  if (!url) {
-    setError('Please enter a valid URL.');
-    return;
-  }
-
-  try {
-    const response = await fetch('http://localhost:5000/scrape', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ url, platform }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch data');
+    if (!url || !platform) {
+        setError('Please enter a valid URL and select a platform.');
+        return;
     }
 
-    const data = await response.json();
-    setScrapedData(data);
-  } catch (error) {
-    console.error('Error scraping data:', error);
-    setError('Error scraping data. Please try again.');
-  }
+    try {
+        const response = await fetch('http://localhost:5000/scrape', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url, platform }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to fetch data');
+        }
+
+        const data = await response.json();
+        setScrapedData(data);
+    } catch (error) {
+        console.error('Error scraping data:', error.message);
+        setError(`Error scraping data: ${error.message}`);
+    }
 };
+
 
   return (
       <div className="scrape-form">
@@ -59,11 +61,12 @@ const ScrapeForm = () => {
             <h3>Scraped Data:</h3>
             {platform === "youtube" && (
               <div>
-                <p><strong>Title:</strong> {scrapedData.title}</p>
-                <p><strong>Channel:</strong> {scrapedData.channelName}</p>
-                <p><strong>Likes:</strong> {scrapedData.likes}</p>
-                <p><strong>Subscribers:</strong> {scrapedData.subscribers}</p>
-                <p><strong>Comments:</strong> {scrapedData.comments}</p>
+                <p><strong>Video Title:</strong> {scrapedData.title}</p>
+                <p><strong>Channel Name:</strong> {scrapedData.channelName}</p>
+                <p><strong> No. of Views:</strong> {scrapedData.views}</p>
+                <p><strong> No. of Likes:</strong> {scrapedData.likes}</p>
+                <p><strong>Subscribers Count:</strong> {scrapedData.subscribers}</p>
+                <p><strong>No. of Comments:</strong> {scrapedData.comments}</p>
               </div>
             )}
 

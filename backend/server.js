@@ -1,166 +1,125 @@
 const express = require('express');
-const puppeteer = require('puppeteer');
 const cors = require('cors');
-const bodyParser = require('body-parser');
+const axios = require('axios');
 
 const app = express();
-const port = 5000;
+const PORT = 5000;
 
-// Middleware
+// API Keys & Access Tokens
+const YOUTUBE_API_KEY = 'YOUR_YOUTUBE_API_KEY';
+const FACEBOOK_ACCESS_TOKEN = 'YOUR_FACEBOOK_ACCESS_TOKEN';
+const INSTAGRAM_ACCESS_TOKEN = 'YOUR_INSTAGRAM_ACCESS_TOKEN';
+const TIKTOK_CLIENT_KEY = 'YOUR_TIKTOK_CLIENT_KEY';
+
+app.use(express.json());
 app.use(cors());
-app.use(bodyParser.json());
 
-// Scraping Function for YouTube
-const scrapeYouTube = async (url) => {
-  try {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.goto(url, { waitUntil: 'domcontentloaded' });
-
-    // Extract YouTube data
-    const data = await page.evaluate(() => {
-      const title = document.querySelector('h1.title')?.innerText || 'No Title';
-      const channelName = document.querySelector('ytd-channel-name a')?.innerText || 'No Channel';
-      const likes = document.querySelector('yt-formatted-string[aria-label*="likes"]')?.innerText || 'No Likes';
-      const subscribers = document.querySelector('#owner-sub-count')?.innerText || 'No Subscribers';
-      const comments = document.querySelector('h2#count')?.innerText || 'No Comments';
-      
-      return {
-        title,
-        channelName,
-        likes,
-        subscribers,
-        comments,
-      };
-    });
-
-    await browser.close();
-
-    return data;
-  } catch (error) {
-    console.error('Error scraping YouTube:', error);
-    throw new Error('Error scraping YouTube');
-  }
-};
-
-// Scraping Function for Instagram
-const scrapeInstagram = async (url) => {
-  try {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.goto(url, { waitUntil: 'domcontentloaded' });
-
-    const data = await page.evaluate(() => {
-      const username = document.querySelector('h1.rhpdm')?.innerText || 'No Username';
-      const followers = document.querySelector('.k9GMp')?.innerText || 'No Followers';
-      const posts = document.querySelector('span.g47SY')?.innerText || 'No Posts';
-      const bio = document.querySelector('div.-vDIg')?.innerText || 'No Bio';
-
-      return {
-        username,
-        followers,
-        posts,
-        bio,
-      };
-    });
-
-    await browser.close();
-
-    return data;
-  } catch (error) {
-    console.error('Error scraping Instagram:', error);
-    throw new Error('Error scraping Instagram');
-  }
-};
-
-// Scraping Function for Facebook (Simplified Example)
-const scrapeFacebook = async (url) => {
-  try {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.goto(url, { waitUntil: 'domcontentloaded' });
-
-    const data = await page.evaluate(() => {
-      const name = document.querySelector('h1')?.innerText || 'No Name';
-      const posts = document.querySelector('span[data-testid="profile_pane_count"]')?.innerText || 'No Posts';
-      const about = document.querySelector('div._4bl9')?.innerText || 'No Bio';
-
-      return {
-        name,
-        posts,
-        about,
-      };
-    });
-
-    await browser.close();
-
-    return data;
-  } catch (error) {
-    console.error('Error scraping Facebook:', error);
-    throw new Error('Error scraping Facebook');
-  }
-};
-
-// Scraping Function for TikTok (Simplified Example)
-const scrapeTikTok = async (url) => {
-  try {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.goto(url, { waitUntil: 'domcontentloaded' });
-
-    const data = await page.evaluate(() => {
-      const username = document.querySelector('h1')?.innerText || 'No Username';
-      const followers = document.querySelector('.share-follow-count')?.innerText || 'No Followers';
-      const likes = document.querySelector('.like-count')?.innerText || 'No Likes';
-
-      return {
-        username,
-        followers,
-        likes,
-      };
-    });
-
-    await browser.close();
-
-    return data;
-  } catch (error) {
-    console.error('Error scraping TikTok:', error);
-    throw new Error('Error scraping TikTok');
-  }
-};
-
-// Scraping Endpoint
 app.post('/scrape', async (req, res) => {
-  const { url, platform } = req.body;
+    const { url, platform } = req.body;
 
-  try {
-    let data;
-
-    switch (platform) {
-      case 'youtube':
-        data = await scrapeYouTube(url);
-        break;
-      case 'instagram':
-        data = await scrapeInstagram(url);
-        break;
-      case 'facebook':
-        data = await scrapeFacebook(url);
-        break;
-      case 'tiktok':
-        data = await scrapeTikTok(url);
-        break;
-      default:
-        return res.status(400).json({ error: 'Unsupported platform' });
+    if (!url || !platform) {
+        return res.status(400).json({ error: 'URL and platform are required' });
     }
 
-    res.json(data); // Send scraped data back to frontend
-  } catch (error) {
-    console.error('Error scraping data:', error);
-    res.status(500).json({ error: 'Failed to scrape data' });
-  }
+    try {
+        let scrapedData = {};
+
+        if (platform === 'youtube') {
+            // YOUTUBE VIDEO SCRAPING
+            const videoId = url.split('v=')[1]?.split('&')[0];
+            if (!videoId) return res.status(400).json({ error: 'Invalid YouTube URL' });
+
+            const videoResponse = await axios.get(`https://www.googleapis.com/youtube/v3/videos`, {
+                params: { part: 'snippet,statistics', id: videoId, key: YOUTUBE_API_KEY }
+            });
+
+            const videoData = videoResponse.data.items[0];
+            if (!videoData) return res.status(404).json({ error: 'Video not found' });
+
+            scrapedData = {
+                title: videoData.snippet.title,
+                channelName: videoData.snippet.channelTitle,
+                likes: videoData.statistics.likeCount || 'Not Available',
+                views: videoData.statistics.viewCount || 'Not Available',
+                comments: videoData.statistics.commentCount || 'Not Available',
+                subscribers: 'Fetching...'
+            };
+
+            const channelId = videoData.snippet.channelId;
+            const channelResponse = await axios.get(`https://www.googleapis.com/youtube/v3/channels`, {
+                params: { part: 'statistics', id: channelId, key: YOUTUBE_API_KEY }
+            });
+
+            const channelData = channelResponse.data.items[0];
+            if (channelData) scrapedData.subscribers = channelData.statistics.subscriberCount || 'Not Available';
+
+        } else if (platform === 'instagram') {
+            // INSTAGRAM POST SCRAPING
+            const mediaId = url.split('/p/')[1]?.split('/')[0] || url.split('/reel/')[1]?.split('/')[0];
+            if (!mediaId) return res.status(400).json({ error: 'Invalid Instagram URL' });
+
+            const instaResponse = await axios.get(`https://graph.facebook.com/v17.0/${mediaId}`, {
+                params: {
+                    fields: 'like_count,comments_count,caption,owner{username}',
+                    access_token: INSTAGRAM_ACCESS_TOKEN
+                }
+            });
+
+            scrapedData = {
+                username: instaResponse.data.owner.username,
+                caption: instaResponse.data.caption || 'No caption',
+                likes: instaResponse.data.like_count || '0',
+                comments: instaResponse.data.comments_count || '0'
+            };
+
+        } else if (platform === 'facebook') {
+            // FACEBOOK POST SCRAPING
+            const postId = url.split('/posts/')[1]?.split('/')[0];
+            if (!postId) return res.status(400).json({ error: 'Invalid Facebook Post URL' });
+
+            const fbResponse = await axios.get(`https://graph.facebook.com/v17.0/${postId}`, {
+                params: {
+                    fields: 'likes.summary(true),comments.summary(true),message,from',
+                    access_token: FACEBOOK_ACCESS_TOKEN
+                }
+            });
+
+            scrapedData = {
+                username: fbResponse.data.from.name,
+                post: fbResponse.data.message || 'No description',
+                likes: fbResponse.data.likes?.summary.total_count || '0',
+                comments: fbResponse.data.comments?.summary.total_count || '0'
+            };
+
+        } else if (platform === 'tiktok') {
+            // TIKTOK VIDEO SCRAPING
+            const videoId = url.split('/video/')[1]?.split('?')[0];
+            if (!videoId) return res.status(400).json({ error: 'Invalid TikTok URL' });
+
+            const tiktokResponse = await axios.get(`https://open-api.tiktok.com/video/info/`, {
+                params: { video_id: videoId, client_key: TIKTOK_CLIENT_KEY }
+            });
+
+            const video = tiktokResponse.data.data.video_info;
+            scrapedData = {
+                username: video.author.nickname,
+                caption: video.desc || 'No caption',
+                likes: video.stats.digg_count || '0',
+                comments: video.stats.comment_count || '0'
+            };
+
+        } else {
+            return res.status(400).json({ error: 'Unsupported platform' });
+        }
+
+        return res.json(scrapedData);
+
+    } catch (error) {
+        console.error('Error scraping:', error.message);
+        res.status(500).json({ error: 'Failed to scrape data' });
+    }
 });
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
 });

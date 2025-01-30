@@ -58,7 +58,7 @@ button:hover {
 /* Error message styling */
 .error-message {
     color: rgb(86, 10, 10);
-    font-size: 1.3rem;
+    font-size: 1rem;
     font-weight: bold;
     margin-top: 10px;
 }
