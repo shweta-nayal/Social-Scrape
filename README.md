@@ -1,73 +1,64 @@
 ﻿# Social-Scrape
 
-🚀 A web application that extracts relevant data from social media platforms like YouTube, Facebook, Instagram, and TikTok.
+# 📌 Social Media Scraper
 
-📌 Features
+## 🔹 Introduction
+The **Social Media Scraper** is a full-stack web application that extracts public data from **YouTube, Facebook, Instagram, and TikTok**. Users can input a URL, select a platform, and retrieve details like **video titles, likes, comments, subscribers, and more**. The project is built with **React (Vite) for the frontend** and **Node.js with Express.js for the backend**, using various APIs to fetch relevant data.
 
-Scrapes data from YouTube, Facebook, Instagram, and TikTok.
+---
 
-Extracts video titles, channel names, likes, comments, subscribers, and post details.
+## 🚀 Features
+✅ **YouTube Scraping** – Fetch video title, channel name, likes, comments, and subscribers.  
+✅ **Facebook Scraping** – Extract post details like username, likes, comments, and creation time.  
+✅ **Instagram Scraping** – Retrieve profile details (followers, posts) or reel engagement (likes, comments).  
+✅ **TikTok Scraping** – Fetch profile details or reel engagement data.  
+✅ **Modern UI** – A clean and responsive design with a **blue pastel theme**.  
 
-User-friendly React.js frontend with a modern blue pastel theme.
+---
 
-Backend powered by Node.js and Express.js.
+## 📦 Installation & Setup
 
-Uses Facebook Graph API for fetching Facebook post details.
+### 1️⃣ Clone the Repository
+```sh
+git clone https://github.com/your-username/social-media-scraper.git
+cd social-media-scraper
+```
 
-Fully responsive UI with a clean and trendy design.
-
-🛠️ Tech Stack
-
-Frontend:
-
-React.js (Vite)
-
-CSS (Custom Styling)
-
-Backend:
-
-Node.js
-
-Express.js
-
-Axios
-
-APIs Used:
-
-YouTube Data API
-
-Facebook Graph API
-
-TikTok & Instagram Web Scraping (via Axios)
-
-🚀 Installation & Setup
-
-1️⃣ Clone the Repository
-
- git clone https://github.com/yourusername/social-media-scraper.git
- cd social-media-scraper
-
-2️⃣ Install Dependencies
-
-Frontend:
-
+### 2️⃣ Install Dependencies
+## Frontend:
+```sh
 cd frontend
 npm install
-
-Backend:
-
-cd backend
+```
+## Backend:
+```sh
+cd ../backend
 npm install
+```
 
-3️⃣ Start the Application
+### 3️⃣ Configure API Keys
+Before running this project, make sure to add your API keys for each platform.
+(API keys can be obtained from their respective developer portals.)
 
-Frontend:
-
-npm run dev
-
-Backend:
-
+### ▶️ Run the Project
+## Start Backend
+```sh
+cd backend
 node server.js
+```
+## Start Frontend
+```sh
+cd frontend
+npm run dev
+```
+Now, open http://localhost:5173 in your browser to use the scraper.
 
-Now, visit http://localhost:5173/ in your browser.
+### 🔥 Happy Scraping! 🚀
+
+
+
+
+
+
+
 
