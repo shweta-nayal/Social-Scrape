@@ -14,7 +14,7 @@ The **Social Media Scraper** is a full-stack web application that extracts publi
 ✅ **Facebook Scraping** – Extract post details like username, likes, comments, and creation time.  
 ✅ **Instagram Scraping** – Retrieve profile details (followers, posts) or reel engagement (likes, comments).  
 ✅ **TikTok Scraping** – Fetch profile details or reel engagement data.  
-✅ **Modern UI** – A clean and responsive design with a **blue pastel theme**.  
+✅ **Modern UI** – A clean and responsive design with a **minimilistic pastel theme**.  
 
 ---
 
