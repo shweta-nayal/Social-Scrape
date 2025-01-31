@@ -5,7 +5,7 @@
 ## 🔹 Introduction
 The **Social Media Scraper** is a full-stack web application that extracts public data from **YouTube, Facebook, Instagram, and TikTok**. Users can input a URL, select a platform, and retrieve details like **video titles, likes, comments, subscribers, and more**. The project is built with **React (Vite) for the frontend** and **Node.js with Express.js for the backend**, using various APIs to fetch relevant data.
 
-#### **You can view the live project here : **  https://social-scrape-ohd1.vercel.app/
+#### You can view the live project here : https://social-scrape-ohd1.vercel.app/
 
 ---
 
