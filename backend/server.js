@@ -12,7 +12,8 @@ const INSTAGRAM_ACCESS_TOKEN = 'YOUR_INSTAGRAM_ACCESS_TOKEN';
 const TIKTOK_CLIENT_KEY = 'YOUR_TIKTOK_CLIENT_KEY';
 
 app.use(express.json());
-app.use(cors());
+// app.use(cors());
+app.use(cors({ origin: "*" }));
 
 app.post('/scrape', async (req, res) => {
     const { url, platform } = req.body;
