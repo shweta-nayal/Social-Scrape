@@ -1,44 +1,47 @@
-import React from 'react';
+import React from "react";
+import "./ScrapedData.css"; 
 
-// This component will receive the scraped data as props
 const ScrapedData = ({ data }) => {
   if (!data) {
-    return <p>No data to display. Please enter a valid URL.</p>;
+    return <p className="error-message">No data available. Please enter a valid URL.</p>;
   }
 
   return (
     <div className="scraped-data-container">
       <h2>Scraped Data</h2>
 
-      {/* Display different sections based on platform */}
+      {/* YouTube Data */}
       {data.title && (
         <div className="data-card">
-          <h3>Video Title: {data.title}</h3>
-          <p>Channel Name: {data.channelName}</p>
-          <p>Likes: {data.likes}</p>
-          <p>Subscribers: {data.subscribers}</p>
-          <p>Comments: {data.comments}</p>
+          <h3>🎥 YouTube Video</h3>
+          <p><strong>Title:</strong> {data.title}</p>
+          <p><strong>Channel Name:</strong> {data.channelName || "N/A"}</p>
+          <p><strong>Likes:</strong> {data.likes || "N/A"}</p>
+          <p><strong>Subscribers:</strong> {data.subscribers || "N/A"}</p>
+          <p><strong>Comments:</strong> {data.comments || "N/A"}</p>
         </div>
       )}
 
+      {/* Instagram / TikTok / Facebook Data */}
       {data.username && (
         <div className="data-card">
-          <h3>Username: {data.username}</h3>
-          <p>Followers: {data.followers}</p>
-          <p>Posts: {data.posts}</p>
-          <p>Bio: {data.bio}</p>
+          <h3>📸 Social Media Profile</h3>
+          <p><strong>Username:</strong> {data.username}</p>
+          <p><strong>Followers:</strong> {data.followers || "N/A"}</p>
+          <p><strong>Posts:</strong> {data.posts || "N/A"}</p>
+          <p><strong>Bio:</strong> {data.bio || "N/A"}</p>
         </div>
       )}
 
+      {/* Facebook Pages */}
       {data.name && (
         <div className="data-card">
-          <h3>Name: {data.name}</h3>
-          <p>Posts: {data.posts}</p>
-          <p>Bio: {data.about}</p>
+          <h3>📘 Facebook Page</h3>
+          <p><strong>Name:</strong> {data.name}</p>
+          <p><strong>Posts:</strong> {data.posts || "N/A"}</p>
+          <p><strong>About:</strong> {data.about || "N/A"}</p>
         </div>
       )}
-
-      {/* Add other social platforms as necessary */}
     </div>
   );
 };

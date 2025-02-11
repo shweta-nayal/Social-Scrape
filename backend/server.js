@@ -3,18 +3,21 @@ const cors = require('cors');
 const axios = require('axios');
 
 const app = express();
-const PORT = process.env.PORT || 5000;  // Use dynamic port for deployment
+const PORT = 5000;
 
-// ✅ Configure CORS properly
-app.use(cors({
-    origin: "*",  // Allow all origins (for debugging, restrict later)
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type"]
-}));
+// API Keys & Access Tokens
+const YOUTUBE_API_KEY = 'AIzaSyAHvI1uVIHB6qPBTb-_TJz3jzO_RSeMQkw';
 
 app.use(express.json());
 
-app.post('/api/scrape', async (req, res) => {  // ✅ Ensure API route is prefixed with `/api`
+// CORS Configuration (Allow requests from frontend)
+app.use(cors({
+    origin: 'http://localhost:5173',  
+    methods: 'GET,POST,PUT,DELETE',
+    allowedHeaders: 'Content-Type,Authorization'
+}));
+
+app.post('/scrape', async (req, res) => {
     const { url, platform } = req.body;
 
     if (!url || !platform) {
@@ -25,14 +28,16 @@ app.post('/api/scrape', async (req, res) => {  // ✅ Ensure API route is prefix
         let scrapedData = {};
 
         if (platform === 'youtube') {
+            // Extract YouTube video ID
             const videoId = url.split('v=')[1]?.split('&')[0];
             if (!videoId) return res.status(400).json({ error: 'Invalid YouTube URL' });
 
+            // Fetch Video Details
             const videoResponse = await axios.get(`https://www.googleapis.com/youtube/v3/videos`, {
-                params: { part: 'snippet,statistics', id: videoId, key: process.env.YOUTUBE_API_KEY }
+                params: { part: 'snippet,statistics', id: videoId, key: YOUTUBE_API_KEY }
             });
 
-            const videoData = videoResponse.data.items[0];
+            const videoData = videoResponse.data.items?.[0];
             if (!videoData) return res.status(404).json({ error: 'Video not found' });
 
             scrapedData = {
@@ -40,21 +45,31 @@ app.post('/api/scrape', async (req, res) => {  // ✅ Ensure API route is prefix
                 channelName: videoData.snippet.channelTitle,
                 likes: videoData.statistics.likeCount || 'Not Available',
                 views: videoData.statistics.viewCount || 'Not Available',
-                comments: videoData.statistics.commentCount || 'Not Available'
+                comments: videoData.statistics.commentCount || 'Not Available',
+                subscribers: 'Fetching...'
             };
 
+            // Fetch Channel Subscribers
+            const channelId = videoData.snippet.channelId;
+            const channelResponse = await axios.get(`https://www.googleapis.com/youtube/v3/channels`, {
+                params: { part: 'statistics', id: channelId, key: YOUTUBE_API_KEY }
+            });
+
+            const channelData = channelResponse.data.items?.[0];
+            if (channelData) {
+                scrapedData.subscribers = channelData.statistics.subscriberCount || 'Not Available';
+            }
         } else {
             return res.status(400).json({ error: 'Unsupported platform' });
         }
 
         return res.json(scrapedData);
-
     } catch (error) {
         console.error('Error scraping:', error.message);
-        res.status(500).json({ error: 'Failed to scrape data' });
+        return res.status(500).json({ error: 'Failed to scrape data' });
     }
 });
 
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Server is running on http://localhost:${PORT}`);
 });

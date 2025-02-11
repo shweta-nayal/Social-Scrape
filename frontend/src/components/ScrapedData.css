@@ -1,32 +1,38 @@
 .scraped-data-container {
   background-color: #f4f8ff;
   padding: 20px;
-  margin-top: 30px;
+  margin-top: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
+  text-align: left;
 }
 
 .data-card {
-  background-color: #ffffff;
+  background-color: #fffefe;
   padding: 15px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.95);
+  border-radius: 12px;
 }
 
 .data-card h3 {
-  font-size: 1.5rem;
-  color: #333;
+  font-size: 1.3rem;
+  color: #292828;
+  margin-top: 0;
+  margin-bottom: 25px;
 }
 
 .data-card p {
   font-size: 1rem;
-  color: #555;
+  color: #2f2e2e;
 }
 
-h2 {
-  color: #333;
-  font-size: 2rem;
+.scraped-data-container h2 {
+  color: #161616;
+  font-size: 30px;
   text-align: center;
-  margin-bottom: 20px;
+  margin-top: 2px;
+  margin-bottom: 15px;
 }
+
+
